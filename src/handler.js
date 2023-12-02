@@ -4,6 +4,13 @@ const controller = require("./controller");
 const { createReadStream } = require("fs");
 const path = require("path");
 
+// GET - sends html back to the browser => when you type something in the url bar
+/*
+  Triggers 2 ways:
+  1. type into url
+  2. links <== Users will do this, not type in url bar
+ */
+// POST - should NOT send to browser -> browser should send to server => 
 const allRoutes = {
   // GET: localhost:3000/form
   "/form:get": (request, response) => {

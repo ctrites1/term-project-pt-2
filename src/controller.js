@@ -1,30 +1,91 @@
-const fs = require("fs");
+/* ------------------------ Packages, Modules, Etc ~ ------------------------ */
+const fs = require("fs/promises");
 const { DEFAULT_HEADER } = require("./util/util");
 const path = require("path");
-var qs = require("querystring");
+const qs = require("querystring");
+const { EOL } = require("os");
+const formidable = require("formidable");
+const { error } = require("console");
 
+/* ---------------------------------- Notes --------------------------------- */
+/*  Get requests: typing in url bar OR clicking a link
+    "/feed?KEY=VALUE" => Query String
+*/
+/* ------------------------------- Actual Code ------------------------------ */
 const controller = {
-  getFormPage: (request, response) => {
-    return response.end(`
-    <h1>Hello world</h1> <style> h1 {color:red;}</style>
-    <form action="/form" method="post">
-    <input type="text" name="username"><br>
-    <input type="text" name="password"><br>
-    <input type="submit" value="Upload">
-    </form>
-    `);
-  },
-  sendFormData: (request, response) => {
-    var body = "";
+    getFormPage: async (request, response) => {
+        
+        const userDataPath = path.join(path.dirname(__dirname), "database/data.json");
 
-    request.on("data", function (data) {
-      body += data;
+        let userArray = []; // array of all users from data.json
+        let divList = []; // list of all htmlDiv blocks from each user
+        let homepageBody = ""; // above list of divs as a single string
+
+        await fs.readFile(userDataPath, "utf-8")
+        .then((dataArray) => JSON.parse(dataArray).forEach((userObj) => userArray.push(userObj.username)))
+        .then(() => userArray.forEach((name) => 
+        divList.push(`
+        <form action="/form" method="post">
+        <div>
+            <input type="file"/>
+            <a href="/feed?user=${name}">${name} FEED</a>
+        </div>
+    
+        <div class="button">
+            <button type="submit">Upload Photo</button>
+        </div>
+        </form>`)))
+        .then(() => (homepageBody = divList.join(EOL)))
+        .catch((err) => console.log(err))
+        
+        const homepageTop = (`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Homepage</title>
+            <link rel="stylesheet" href="homepageStyle.css">
+        </head>
+        <body>
+            <h1>Users</h1>
+        `);
+        
+        const homepageBottom = (`
+        </body>
+        </html>
+        `);
+    
+    return response.end(homepageTop.concat(EOL, homepageBody, EOL, homepageBottom))
+
+  },
+  sendFormData: async (request, response) => {
+    let body = "";
+    const form = formidable({ 
+        uploadDir: `uploads`,
+        keepExtensions: true,
+        minFileSize: 1,
+        maxFiles: 1,
+        filter: function({name, originalFilename, mimetype}) {
+            return mimetype && mimetype.includes(`image/png`);
+        }
     });
+
+    form.parse(request, async (err, fields, files) => {
+        if (err) {
+            console.log("Error parsing files");
+        };
+    });
+
 
     request.on("end", function () {
-      var post = qs.parse(body);
+      let post = qs.parse(body);
       console.log(post);
     });
+  },
+
+  uploadImages: (request, response) => {
+
   },
 
   getFeed: (request, response) => {
@@ -682,8 +743,6 @@ const controller = {
     `);
     response.end();
   },
-
-  uploadImages: (request, response) => {},
 };
 
 module.exports = controller;
