@@ -5,6 +5,7 @@ body {
   display: flex;
   flex: 1;
   align-items: left;
+  flex-direction: column;
 }
 
 h1 {
@@ -33,7 +34,8 @@ p {
 }
 a {
   align-items: left;
-  justify-content: space-around;
+  justify-content: space-between;
+  order: 1;
 }
 img {
   display: flex;
@@ -41,4 +43,5 @@ img {
   height: 220px;
   width: 220px;
 }
+#userBox > input {}
 
