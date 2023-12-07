@@ -31,12 +31,11 @@ const allRoutes = {
       return;
 
     }
-
     console.log(req.url);
     await fs.readFile(__dirname + req.url).then((data) => {
-    
-        res.writeHead(200, "Content-Type: image/jpeg");
-        res.end(data);
+      
+      res.writeHead(200, DEFAULT_HEADER); //"Content-Type: image/jpeg"
+      res.end(data);
 
     }).catch((err) => {res.writeHead(404, DEFAULT_HEADER);
         res.end("404 not found");});
