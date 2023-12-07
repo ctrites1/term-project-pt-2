@@ -1,0 +1,33 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Homepage</title>
+    <link rel="stylesheet" href="/views/homepageStyle.css" />
+  </head>
+
+  <body>
+    <h1>Users</h1>
+    <form
+      action="/form"
+      method="post"
+      enctype="multipart/form-data"
+      id="formID"
+    >
+    <% userData.forEach((user) => { %>
+        <div id="userBox">
+            <div>
+                <input type="file" name="file" />
+                <input type="hidden" name="user" value="" />
+                <a href="/feed?user=<%= user.username %>" id="profile-link"><img src="/photos/<%= user.username %>/profile.jpeg" alt=""/></a>
+              </div>
+        
+              <div class="button">
+                <button type="submit">Upload Photo</button>
+              </div>
+        </div>
+    <% }) %>
+    </form>
+    
+  </body>
+</html>
