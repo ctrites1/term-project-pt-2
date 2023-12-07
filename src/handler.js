@@ -1,8 +1,7 @@
 const { parse } = require("url");
 const { DEFAULT_HEADER } = require("./util/util.js");
 const controller = require("./controller");
-const { createReadStream } = require("fs");
-const path = require("path");
+const fs = require("fs/promises");
 
 // GET - sends html back to the browser => when you type something in the url bar
 /*
@@ -18,10 +17,6 @@ const allRoutes = {
   },
   // POST: localhost:3000/form
   "/form:post": (request, response) => {
-    controller.sendFormData(request, response);
-  },
-  // POST: localhost:3000/images
-  "/images:post": (request, response) => {
     controller.uploadImages(request, response);
   },
   // GET: localhost:3000/feed
@@ -30,12 +25,27 @@ const allRoutes = {
     controller.getFeed(request, response);
   },
 
-  // 404 routes
-  default: (request, response) => {
-    response.writeHead(404, DEFAULT_HEADER);
-    createReadStream(path.join(__dirname, "views", "404.html"), "utf8").pipe(
-      response
-    );
+  default: async (req, res) => {
+    if (req.url === "/") {
+      controller.getFormPage(req, res);
+      return;
+
+    }
+
+    console.log(req.url);
+    await fs.readFile(__dirname + req.url).then((data) => {
+    
+        res.writeHead(200, "Content-Type: image/jpeg");
+        res.end(data);
+
+    }).catch((err) => {res.writeHead(404, DEFAULT_HEADER);
+        res.end("404 not found");});
+    return;
+    // controller.getFormPage(request, response);
+    // response.writeHead(404, DEFAULT_HEADER);
+    // createReadStream(path.join(__dirname, "views", "404.html"), "utf8").pipe(
+    //   response
+    // );
   },
 };
 

@@ -3,6 +3,7 @@
     "id": "90bf10a3-c9fb-406a-a35a-3e4a8db0fbf8",
     "description": "welcome to my profile!",
     "username": "john123",
+    "fullname": "John Steinbeck",
     "stats": {
       "posts": 3,
       "followers": 30,
@@ -11,17 +12,20 @@
     "profile": "profile.jpeg",
     "photos": [
       "pic1.png",
-      "pic2.png"
+      "pic2.png",
+      "ab250c7d64835c675e6253600.png",
+      "2021_06_04_butler-bunnny-18023850.png"
     ]
   },
   {
     "id": "cb506c7d-1c2f-4ce8-a56f-d45f16bf34cf",
     "description": "Hi there!",
     "username": "sandra123",
+    "fullname": "Sandra Bullock",
     "stats": {
       "posts": 3,
-      "followers": 30,
-      "following": 30
+      "followers": 0,
+      "following": 69
     },
     "profile": "profile.jpeg",
     "photos": [
